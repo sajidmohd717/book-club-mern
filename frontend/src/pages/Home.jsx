@@ -76,6 +76,21 @@ const Home = () => {
     }
   };
 
+  const handleDeleteClick = (bookId) => {
+    console.log("Attempting to delete book with id:", bookId); // Add this line
+    if (window.confirm("Are you sure you want to delete this book?")) {
+      axios
+        .delete(`http://localhost:3500/books/${bookId}`)
+        .then(() => {
+          setBooks(books.filter((book) => book._id !== bookId));
+          console.log("Book deleted successfully"); // Add this line
+        })
+        .catch((error) => {
+          console.error("Error deleting book:", error.response); // Modified this line
+        });
+    }
+  };
+
   const handleAddClick = () => {
     setIsAdding(true);
   };
@@ -86,7 +101,7 @@ const Home = () => {
   return (
     <div className="container">
       <div className="header">
-        <h1>Books List</h1>
+        <h1>Student List</h1>
         <MdOutlineAddBox className="addbox" onClick={handleAddClick} />
       </div>
 
@@ -94,8 +109,8 @@ const Home = () => {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Author</th>
-            <th>Publish Year</th>
+            <th>Gender</th>
+            <th>Grade</th>
             <th>Operations</th>
           </tr>
         </thead>
@@ -108,7 +123,7 @@ const Home = () => {
                   name="title"
                   value={newBook.title}
                   onChange={handleInputChange}
-                  placeholder="Enter book title"
+                  placeholder="Enter Student Name"
                 />
               </td>
               <td>
@@ -117,7 +132,7 @@ const Home = () => {
                   name="author"
                   value={newBook.author}
                   onChange={handleInputChange}
-                  placeholder="Enter author name"
+                  placeholder="Enter Student Gender"
                 />
               </td>
               <td>
@@ -126,7 +141,7 @@ const Home = () => {
                   name="publishYear"
                   value={newBook.publishYear}
                   onChange={handleInputChange}
-                  placeholder="Enter publish year"
+                  placeholder="Enter Student Grade"
                 />
               </td>
               <td className="operations">
@@ -186,7 +201,10 @@ const Home = () => {
                       className="aioutlineedit"
                       onClick={() => handleEditClick(book)}
                     />
-                    <MdOutlineDelete className="delete" />
+                    <MdOutlineDelete
+                      className="delete"
+                      onClick={() => handleDeleteClick(book._id)}
+                    />
                   </>
                 )}
               </td>
