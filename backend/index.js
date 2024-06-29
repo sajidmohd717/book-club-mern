@@ -26,16 +26,20 @@ app.get("/", (request, response) => {
 
 app.post("/books", async (request, response) => {
   try {
-    if (!request.body.title || !request.body.author) {
+    console.log("Received book data:", request.body);  // Add this line
+    if (!request.body.title || !request.body.author || !request.body.publishYear) {
       return response.status(400).send({
-        message: "Send all required fields: title, author, publishyear",
+        message: "Send all required fields: title, author, publishYear",
       });
     }
     const newBook = {
       title: request.body.title,
       author: request.body.author,
+      publishYear: request.body.publishYear,
     };
+    console.log("Creating new book:", newBook);  // Add this line
     const book = await Book.create(newBook);
+    console.log("Created book:", book);  // Add this line
 
     return response.status(201).send(book);
   } catch (error) {
@@ -72,10 +76,12 @@ app.get("/books/:id", async (request, response) => {
 });
 
 app.put("/books/:id", async (request, response) => {
+  console.log("edit book data")
   try {
     if (
       !request.body.title ||
-      !request.body.author
+      !request.body.author ||
+      !request.body.publishYear
     ) {
       return response.status(400).send({
         message: "Send all required fields: title, author, publishyear",
@@ -83,6 +89,7 @@ app.put("/books/:id", async (request, response) => {
     }
 
     const { id } = request.params;
+    console.log(request.body)
     const result = await Book.findByIdAndUpdate(id, request.body);
 
     if (!result) {
